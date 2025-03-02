@@ -46,6 +46,27 @@ app.delete("/api/persons/:id", (request, response) => {
   response.status(204).end();
 });
 
+app.use(express.json());
+
+const generateId = () => {
+  const id = Math.random().toFixed(5) * 100000;
+  return String(id);
+};
+
+app.post("/api/persons", (request, response) => {
+  const body = request.body;
+
+  const person = {
+    id: generateId(),
+    name: body.name,
+    number: body.number,
+  };
+
+  persons = persons.concat(person);
+
+  response.status(201).json(person);
+});
+
 app.get("/info", (request, response) => {
   const time = new Date().toString();
   const count = persons.length;
