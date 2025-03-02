@@ -1,5 +1,9 @@
 const express = require("express");
+const morgan = require("morgan");
 const app = express();
+
+app.use(express.json());
+app.use(morgan("tiny"));
 
 let persons = [
   {
@@ -45,8 +49,6 @@ app.delete("/api/persons/:id", (request, response) => {
 
   response.status(204).end();
 });
-
-app.use(express.json());
 
 const generateId = () => {
   const id = Math.random().toFixed(5) * 100000;
