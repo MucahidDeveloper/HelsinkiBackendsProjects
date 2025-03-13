@@ -54,9 +54,9 @@ app.post("/api/persons", (request, response, next) => {
     return response.status(400).json({ error: "Name or number is missing" });
   }
 
-  if (persons.find((person) => person.name === body.name)) {
-    return response.status(400).json({ error: "Name must be unique" });
-  }
+  // if (persons.find((person) => person.name === body.name)) {
+  //   return response.status(400).json({ error: "Name must be unique" });
+  // }
 
   const person = new Person({
     name: body.name,
@@ -83,6 +83,21 @@ app.delete("/api/persons/:id", (request, response, next) => {
       } else {
         response.status(404).json({ error: "Person not found" });
       }
+    })
+    .catch((error) => next(error));
+});
+
+app.put("/api/persons/:id", (request, response, next) => {
+  const body = request.body;
+
+  const person = {
+    name: body.name,
+    number: body.number,
+  };
+
+  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+    .then((updatedPerson) => {
+      response.json(updatedPerson);
     })
     .catch((error) => next(error));
 });
