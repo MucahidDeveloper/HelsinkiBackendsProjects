@@ -21,10 +21,6 @@ app.use(cors());
 
 app.use(express.json());
 
-const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: "unknown endpoint" });
-};
-
 app.get("/api/persons", (request, response) => {
   Person.find({}).then((persons) => {
     response.json(persons);
@@ -60,30 +56,31 @@ app.post("/api/persons", (request, response) => {
   person.save().then((savedPerson) => {
     response.json(savedPerson);
   });
-  // persons = persons.concat(person);
-
-  // response.status(201).json(person);
 });
 
-app.delete("/api/persons/:id", (request, response) => {
+app.delete("/api/persons/:id", (request, response, next) => {
   const id = request.params.id;
-  persons = persons.filter((person) => person.id !== id);
-
-  response.status(204).end();
+  Person.findByIdAndDelete(id)
+    .then((result) => {
+      if (result) {
+        response.status(204).end();
+      } else {
+        response.status(404).json({ error: "Person not found" });
+      }
+    })
+    .catch((error) => next(error));
 });
-
-// const generateId = () => {
-//   const id = Math.random().toFixed(5) * 100000;
-//   return String(id);
-// };
 
 app.get("/info", (request, response) => {
-  const time = new Date().toString();
-  const count = persons.length;
-  response.send(`<p>Phonebook has info for ${count} people</p><p>${time}</p>`);
+  Person.countDocuments({})
+    .then((count) => {
+      const time = new Date().toString();
+      response.send(
+        `<p>Phonebook has info for ${count} people</p><p>${time}</p>`
+      );
+    })
+    .catch((error) => response.status(500).json({ error: "Server error" }));
 });
-
-app.use(unknownEndpoint);
 
 app.use(express.static("dist"));
 
