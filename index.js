@@ -3,6 +3,7 @@ const morgan = require("morgan");
 const app = express();
 require("dotenv").config();
 
+const mongoose = require("mongoose");
 const Person = require("./models/person");
 
 morgan.token("post-data", (req) =>
@@ -21,23 +22,32 @@ app.use(cors());
 
 app.use(express.json());
 
-app.get("/api/persons", (request, response) => {
-  Person.find({}).then((persons) => {
-    response.json(persons);
-  });
+app.get("/api/persons", (request, response, next) => {
+  Person.find({})
+    .then((persons) => {
+      response.json(persons);
+    })
+    .catch((error) => next(error));
 });
 
-app.get("/api/persons/:id", (request, response) => {
-  Person.findById(request.params.id).then((person) => {
-    if (person) {
-      response.json(person);
-    } else {
-      response.status(404).end();
-    }
-  });
+app.get("/api/persons/:id", (request, response, next) => {
+  const id = request.params.id;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return response.status(400).json({ error: "Invalid ID format" });
+  }
+
+  Person.findById(id)
+    .then((person) => {
+      if (person) {
+        response.json(person);
+      } else {
+        response.status(404).json({ error: "Person not found" });
+      }
+    })
+    .catch((error) => next(error));
 });
 
-app.post("/api/persons", (request, response) => {
+app.post("/api/persons", (request, response, next) => {
   const body = request.body;
 
   if (!body.name || !body.number) {
@@ -53,13 +63,19 @@ app.post("/api/persons", (request, response) => {
     number: body.number,
   });
 
-  person.save().then((savedPerson) => {
-    response.json(savedPerson);
-  });
+  person
+    .save()
+    .then((savedPerson) => {
+      response.json(savedPerson);
+    })
+    .catch((error) => next(error));
 });
 
 app.delete("/api/persons/:id", (request, response, next) => {
   const id = request.params.id;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return response.status(400).json({ error: "Invalid ID format" });
+  }
   Person.findByIdAndDelete(id)
     .then((result) => {
       if (result) {
@@ -71,7 +87,7 @@ app.delete("/api/persons/:id", (request, response, next) => {
     .catch((error) => next(error));
 });
 
-app.get("/info", (request, response) => {
+app.get("/info", (request, response, next) => {
   Person.countDocuments({})
     .then((count) => {
       const time = new Date().toString();
@@ -79,7 +95,7 @@ app.get("/info", (request, response) => {
         `<p>Phonebook has info for ${count} people</p><p>${time}</p>`
       );
     })
-    .catch((error) => response.status(500).json({ error: "Server error" }));
+    .catch((error) => next(error));
 });
 
 app.use(express.static("dist"));
@@ -89,6 +105,22 @@ app.use(express.static(path.join(__dirname, "dist")));
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));
+});
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: "unknown endpoint" });
+};
+
+app.use(unknownEndpoint);
+
+app.use((error, request, response, next) => {
+  console.error(error.message);
+
+  if (error.name === "CastError") {
+    return response.status(400).json({ error: "Malformed ID" });
+  }
+
+  response.status(500).json({ error: "Internal server error" });
 });
 
 const PORT = process.env.PORT || 3001;
