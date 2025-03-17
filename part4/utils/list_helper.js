@@ -23,8 +23,39 @@ const favoriteBlog = (blogs) => {
   };
 };
 
+const mostBlogs = (blogs) => {
+  if (blogs.length === 0) return null;
+
+  const authorCounts = {};
+
+  // Count the number of blogs for each author
+  for (const blog of blogs) {
+    if (authorCounts[blog.author]) {
+      authorCounts[blog.author]++;
+    } else {
+      authorCounts[blog.author] = 1;
+    }
+  }
+
+  // Find the author with the most blogs
+  let topAuthor = "";
+  let maxBlogs = 0;
+  for (const author in authorCounts) {
+    if (authorCounts[author] > maxBlogs) {
+      topAuthor = author;
+      maxBlogs = authorCounts[author];
+    }
+  }
+
+  return {
+    author: topAuthor,
+    blogs: maxBlogs,
+  };
+};
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
+  mostBlogs,
 };
