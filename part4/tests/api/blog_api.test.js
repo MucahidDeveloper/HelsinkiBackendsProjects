@@ -18,6 +18,12 @@ test("blogs are returned as json", async () => {
   assert(titles.includes("Test1"));
 });
 
+test("blog posts have an id property instead of _id", async () => {
+  const response = await api.get("/api/blogs");
+  assert(response.body[0].id);
+  assert(!response.body[0]._id);
+});
+
 after(async () => {
   await mongoose.connection.close();
 });
