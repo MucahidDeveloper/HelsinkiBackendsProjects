@@ -16,6 +16,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "node --test"
   }
 }
