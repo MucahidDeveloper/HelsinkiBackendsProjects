@@ -1,8 +1,8 @@
 const { test, describe } = require("node:test");
 const assert = require("node:assert");
-const mostBlogs = require("../utils/list_helper").mostBlogs;
+const totalLikes = require("../../utils/list_helper").totalLikes;
 
-describe("Most Blogs writer", () => {
+describe("total likes", () => {
   const listWithOneBlog = [
     {
       _id: "5a422aa71b54a676234d17f8",
@@ -64,22 +64,15 @@ describe("Most Blogs writer", () => {
       __v: 0,
     },
   ];
-
-  test("when list has only one blog", () => {
-    assert.deepStrictEqual(mostBlogs(listWithOneBlog), {
-      author: "Edsger W. Dijkstra",
-      blogs: 1,
-    });
+  test("when list has only one blog, equals the likes of that", () => {
+    assert.strictEqual(totalLikes(listWithOneBlog), 5);
   });
 
-  test("when list has many blogs", () => {
-    assert.deepStrictEqual(mostBlogs(blogs), {
-      author: "Robert C. Martin",
-      blogs: 3,
-    });
+  test("when list has multiple blogs, equals the likes of that", () => {
+    assert.strictEqual(totalLikes(blogs), 36);
   });
 
-  test("when list is empty", () => {
-    assert.strictEqual(mostBlogs([]), null);
+  test("when list has Zero blogs, equals the likes of that", () => {
+    assert.strictEqual(totalLikes([]), 0);
   });
 });
