@@ -5,6 +5,8 @@ const supertest = require("supertest");
 const app = require("../../app");
 const Blog = require("../../models/blog");
 const helper = require("../api/test_helper.test.js");
+const { url } = require("inspector");
+const { title } = require("process");
 
 const api = supertest(app);
 
@@ -67,6 +69,23 @@ describe("Blog Requests", () => {
     const response = await api.get("/api/blogs");
     const blog = response.body.find((e) => e.title === "Test5");
     assert.strictEqual(blog.likes, 0);
+  });
+
+  test.only("blog without title or url is not added", async () => {
+    const newBlogWithoutTitle = {
+      author: "testRequest",
+      url: "test.com",
+      likes: 4,
+    };
+
+    const newBlogWithoutUrl = {
+      title: "test",
+      author: "testRequest",
+      likes: 4,
+    };
+
+    await api.post("/api/blogs").send(newBlogWithoutTitle).expect(400);
+    await api.post("/api/blogs").send(newBlogWithoutUrl).expect(400);
   });
 });
 
