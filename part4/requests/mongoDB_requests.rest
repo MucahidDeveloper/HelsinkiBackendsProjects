@@ -4,7 +4,7 @@ GET http://localhost:3003/api/blogs/
 GET http://localhost:3003/api/blogs/67d752406141032ccd03ee93
 
 ###
-DELETE http://localhost:3003/api/blogs/67d752266141032ccd03ee8e
+DELETE http://localhost:3003/api/blogs/67d98d3ebd447173d0353c31
 
 ###
 POST http://localhost:3003/api/blogs/
@@ -18,15 +18,15 @@ Content-Type: application/json
 }
 
 ###
-# PUT http://localhost:3003/api/blogs/3
-# Content-Type: application/json
+PUT http://localhost:3003/api/blogs/3
+Content-Type: application/json
 
-# {
-#   "title": "Test",
-#   "author": "testRequest",
-#   "url": "test.com",
-#   "likes": 0
-# }
+{
+  "title": "Test",
+  "author": "testRequest",
+  "url": "test.com",
+  "likes": 0
+}
 
 ###
 
