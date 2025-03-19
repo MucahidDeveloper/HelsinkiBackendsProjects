@@ -87,8 +87,21 @@ describe("Blog Requests", () => {
     await api.post("/api/blogs").send(newBlogWithoutTitle).expect(400);
     await api.post("/api/blogs").send(newBlogWithoutUrl).expect(400);
   });
+
+  test("a blog can be deleted", async () => {
+    const response = await api.get("/api/blogs");
+    const blogToDelete = response.body[0];
+
+    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+
+    const blogsAtEnd = await helper.blogsInDb();
+    assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1);
+
+    const titles = blogsAtEnd.map((r) => r.title);
+    assert(!titles.includes(blogToDelete.title));
+  });
 });
 
 after(async () => {
-  await mongoose.disconnect();
+  await mongoose.connection.close();
 });
