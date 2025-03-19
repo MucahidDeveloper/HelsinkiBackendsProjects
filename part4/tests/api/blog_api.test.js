@@ -100,6 +100,40 @@ describe("Blog Requests", () => {
     const titles = blogsAtEnd.map((r) => r.title);
     assert(!titles.includes(blogToDelete.title));
   });
+
+  test("a blog can be updated", async () => {
+    const response = await api.get("/api/blogs");
+    const blogToUpdate = response.body[0];
+
+    const updatedBlog = {
+      title: "Test1",
+      author: "testRequest",
+      url: "test.com",
+      likes: 4,
+    };
+
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(updatedBlog)
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+  });
+
+  test("to update blog you should add likes number", async () => {
+    const response = await api.get("/api/blogs");
+    const blogToUpdate = response.body[0];
+
+    const updatedBlogWithoutLikes = {
+      title: "Test1",
+      author: "testRequest",
+      url: "test.com",
+    };
+
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(updatedBlogWithoutLikes)
+      .expect(400);
+  });
 });
 
 after(async () => {

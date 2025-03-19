@@ -53,6 +53,10 @@ blogsRouter.put("/:id", async (request, response, next) => {
     likes: body.likes,
   };
 
+  if (!body.likes) {
+    return response.status(400).json({ error: "Likes must be updated" });
+  }
+
   try {
     const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
       new: true,
