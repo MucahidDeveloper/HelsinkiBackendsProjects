@@ -1,7 +1,7 @@
 const blogsRouter = require("express").Router();
 const Blog = require("../models/blog");
 const User = require("../models/user");
-
+const userExtractor = require("../utils/middleware").userExtractor;
 const jwt = require("jsonwebtoken");
 
 blogsRouter.get("/", async (request, response) => {
@@ -11,7 +11,7 @@ blogsRouter.get("/", async (request, response) => {
 
 blogsRouter.get("/:id", async (request, response, next) => {
   try {
-    const blog = Blog.findById(request.params.id);
+    const blog = await Blog.findById(request.params.id);
     response.json(blog);
   } catch (error) {
     response.status(404).end();
@@ -19,40 +19,32 @@ blogsRouter.get("/:id", async (request, response, next) => {
   }
 });
 
-const getTokenFrom = (request) => {
-  const authorization = request.get("authorization");
-  if (authorization && authorization.startsWith("Bearer ")) {
-    return authorization.replace("Bearer ", "");
-  }
-  return null;
-};
-
-blogsRouter.post("/", async (request, response, next) => {
+blogsRouter.post("/", userExtractor, async (request, response, next) => {
   const body = request.body;
+  const user = request.user;
+
+  // const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET); // للتأكد من سلامة التوكين
+  // if (!decodedToken.id) {
+  //   return response.status(401).json({ error: "token invalid" });
+  // }
+
+  // const user = await User.findById(decodedToken.id);
+  const blog = new Blog({
+    title: body.title,
+    author: body.author,
+    url: body.url,
+    likes: body.likes || 0,
+
+    user: user._id,
+  });
 
   try {
-    const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET);
-    if (!decodedToken.id) {
-      return response.status(401).json({ error: "token invalid" });
-    }
-
-    const user = await User.findById(decodedToken.id);
-
-    const blog = new Blog({
-      title: body.title,
-      author: body.author,
-      url: body.url,
-      likes: body.likes || 0,
-      user: user._id,
-    });
-
     const savedBlog = await blog.save();
     user.blogs = user.blogs.concat(savedBlog._id);
     await user.save();
-
     response.status(201).json(savedBlog);
   } catch (error) {
-    return response.status(401).json({ error: "token invalid or missing" });
+    next(error);
   }
 });
 

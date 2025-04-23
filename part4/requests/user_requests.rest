@@ -22,8 +22,8 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRva2VuVXNlciIsImlkIjoiNjgwOGUyMmJjYzcwZjg1MWFhMTQyMjRkIiwiaWF0IjoxNzQ1NDEzMDk0fQ.xbK3Hw7R_nk4ekXf_Ohb4BSsmypNZJfHwFGnHklWrcM
 
 {
-  "title": "Test blog",
-  "author": "auth test",
-  "url": "http://example.com",
-  "likes": 4
+  "title": "Test blog2",
+  "author": "auth test2",
+  "url": "http://example2.com",
+  "likes": 42
 }
