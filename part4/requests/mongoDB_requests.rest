@@ -11,6 +11,7 @@ POST http://localhost:3003/api/blogs/
 Content-Type: application/json
 
 {
+  "userId": "6808c4975f6b9a769a46daf4",
   "title": "Test3",
   "author": "testRequest",
   "url": "test.com",
