@@ -27,3 +27,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRva
   "url": "http://example2.com",
   "likes": 42
 }
+
+###
+DELETE http://localhost:3003/api/blogs/6808e534f29f3260580d36e9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRva2VuVXNlciIsImlkIjoiNjgwOGUyMmJjYzcwZjg1MWFhMTQyMjRkIiwiaWF0IjoxNzQ1NDEzMDk0fQ.xbK3Hw7R_nk4ekXf_Ohb4BSsmypNZJfHwFGnHklWrcM

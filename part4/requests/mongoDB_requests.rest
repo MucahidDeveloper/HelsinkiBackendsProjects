@@ -4,7 +4,7 @@ GET http://localhost:3003/api/blogs/
 GET http://localhost:3003/api/blogs/67d752406141032ccd03ee93
 
 ###
-DELETE http://localhost:3003/api/blogs/67d98d3ebd447173d0353c31
+DELETE http://localhost:3003/api/blogs/67dac446d2141c31c744fc5e
 
 ###
 POST http://localhost:3003/api/blogs/

@@ -23,12 +23,6 @@ blogsRouter.post("/", userExtractor, async (request, response, next) => {
   const body = request.body;
   const user = request.user;
 
-  // const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET); // للتأكد من سلامة التوكين
-  // if (!decodedToken.id) {
-  //   return response.status(401).json({ error: "token invalid" });
-  // }
-
-  // const user = await User.findById(decodedToken.id);
   const blog = new Blog({
     title: body.title,
     author: body.author,
@@ -48,9 +42,20 @@ blogsRouter.post("/", userExtractor, async (request, response, next) => {
   }
 });
 
-blogsRouter.delete("/:id", async (request, response, next) => {
+blogsRouter.delete("/:id", userExtractor, async (request, response, next) => {
   try {
+    const blog = await Blog.findById(request.params.id);
+
+    if (!blog) {
+      return response.status(404).json({ error: "Blog not found" });
+    }
+
+    if (blog.user.toString() !== request.user.id.toString()) {
+      return response.status(403).json({ error: "Unauthorized" });
+    }
+
     await Blog.findByIdAndDelete(request.params.id);
+
     response.status(204).end();
   } catch (error) {
     next(error);
