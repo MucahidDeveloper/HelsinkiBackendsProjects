@@ -2,9 +2,28 @@ POST http://localhost:3003/api/users/
 Content-Type: application/json
 
 {
- "name": "John Doe",
- "username": "johndoe",
- "password": "password123"
+ "name": "token User",
+ "username": "tokenUser",
+ "password": "pass"
 }
 
 ###
+
+POST http://localhost:3003/api/login
+Content-Type: application/json
+
+{
+ "username": "tokenUser",
+ "password": "pass"
+}
+###
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRva2VuVXNlciIsImlkIjoiNjgwOGUyMmJjYzcwZjg1MWFhMTQyMjRkIiwiaWF0IjoxNzQ1NDEzMDk0fQ.xbK3Hw7R_nk4ekXf_Ohb4BSsmypNZJfHwFGnHklWrcM
+
+{
+  "title": "Test blog",
+  "author": "auth test",
+  "url": "http://example.com",
+  "likes": 4
+}
